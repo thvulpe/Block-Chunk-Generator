@@ -1,59 +1,75 @@
-TASK 1
+# Block Chunk Generator Assignment - Programming Course
 
-Verific daca block-ul se afla in dimensiunile chunk-ului si, in caz afirmativ, actualizez chunk-ul.
+## 📘 Overview
 
-TASK 2
+This project is part of the **Programming** course at the Faculty of Computer Science, University Politehnica of Bucharest. The assignment involves manipulating 3D structures (chunks) composed of blocks, implementing a series of tasks inspired by voxel-based environments (e.g., Minecraft).
 
-Ma asigur de ordinea crescatoare a coordonatelor, dupa care le parcurg si actualizez chunk-ul.
+## 🧱 Problem Context
 
-TASK 3
+Each task adds a new functionality for modifying or analyzing a 3D chunk (a fixed-size 3D grid of blocks). The project is implemented in C and emphasizes correct memory management, efficient traversal, and logical structuring of 3D data.
 
-Asemanator functiei de la task 2, calculez colturile unui cuboid cu latura de 2 * raza, in jurul centrului sferei.
-Apoi, un block se afla in interiorul sferei numai si numai daca distanta de la centru la acesta este strict mai mica decat raza.
+---
 
-TASK 4
+## ✅ Task Summary
 
-Folosesc vectori de coordonate pentru a trece prin vecinii fiecarui block.
-Un caz particular il reprezinta situatia in care target_block coincide cu shell_block, pentru care folosesc un tablou tridimensional ce retine block-urile nou plasate,
-evitand astfel luarea in considerare a acestora in construirea shell-ului.
+### Task 1 – Set Single Block
+- Checks if the target coordinates are within bounds.
+- If valid, updates the chunk at the specified location.
 
-TASK 5
+### Task 2 – Set Rectangular Area
+- Normalizes coordinate order.
+- Iterates through the resulting cuboid and updates all contained blocks.
 
-Am implementat un algoritm de tip Fill, folosind vectori de coordonate, un tablou bidimensional pentru vizite (dimensiunea Y este irelevanta) si o structura ce retine coordonatele
-X si Z. Adaug block-ul de la coordonatele transmise ca parametri in coada, dupa care adaug in coada si parcurg toate block-urile adiacente care respecta conditiile.
+### Task 3 – Fill Sphere
+- Computes the bounding cuboid for a sphere centered at a given point.
+- Updates only the blocks strictly within the sphere using the Euclidean distance formula.
 
-TASK 6
+### Task 4 – Build Shell Around Block
+- Iterates through all neighboring positions using 3D offset vectors.
+- Uses a temporary 3D array to avoid placing shell blocks over newly placed ones, especially when `shell_block` equals `target_block`.
 
-Asemanator task-ului 5, cu exceptia faptului ca tin cont si de dimensiunea Y.
+### Task 5 – 2D Flood Fill (XZ Plane)
+- Implements a fill algorithm using a queue and a 2D visited map (Y axis ignored).
+- Adds adjacent blocks that meet fill conditions.
 
-TASK 7
+### Task 6 – 3D Flood Fill
+- Extends the 2D fill logic to three dimensions.
+- Maintains a 3D visited array to track progress.
 
-Aloc memorie pentru un chunk auxiliar, care devine chunk-ul initial, rotit la 90 de grade. Pentru rotire am folosit urmatoarea relatie: (x,y,z) devine (z,y,width-x-1).
-Intrucat returnez chunk-ul creat de mine, eliberez memoria pentru chunk-ul primit ca parametru.
+### Task 7 – Rotate Chunk 90° (around Y-axis)
+- Allocates a new chunk rotated in the XZ plane using the mapping:  
+  `(x, y, z) → (z, y, width - x - 1)`
+- Frees the original chunk and returns the rotated one.
 
-TASK 8
+### Task 8 – Apply Gravity
+- Implements a gravity simulation by identifying “bodies” of connected blocks and moving them down.
+- Two types of bodies:
+  - **Uniform bodies**: composed of the same block type.
+  - **Mixed bodies**: composed of adjacent blocks regardless of type.
+- Uses helper functions:
+  - `get_body_at`, `get_mixed_body_at`: extract 3D bodies.
+  - `is_touching_ground`: checks if the body is supported from below.
+  - `lower_body`: applies downward movement.
 
-Pentru acest task, am folosit mai multe functii auxiliare:
+### Task 9 – Run-Length Encoding
+- Encodes each row of the chunk by grouping identical consecutive blocks.
+- Uses bit manipulation to store block type and run length efficiently.
 
-get_body_at - intoarce un corp format din block-uri de acelasi tip sub forma unui tablou tridimensional (un chunk cu toate celelalte block-uri eliminate), folosind un algoritm
-de tip Fill, asemanator celui de la task 5 si 6.
+### Task 10 – Run-Length Decoding
+- Reconstructs the original chunk by decoding each run from the encoded format.
+- Mirrors the logic from Task 9 in reverse.
 
-get_mixed_body_at - acelasi lucru ca get_body_at, cu exceptia faptului ca orice block-uri adiacente formeaza un corp, indiferent daca sunt de acelasi tip sau nu
+---
 
-is_touching_ground - ia ca parametru un corp si verifica daca "atinge pamantul", adica daca vreunul din block-urile sale are dedesubt un block care nu face parte din
-corpul respectiv
+## 🛠 Technologies Used
 
-lower_body - ia ca parametru un corp si un chunk si deplaseaza corpul cu o pozitie in jos pe axa Oy
+- **Language**: C
+- **Core Techniques**: 3D matrix manipulation, BFS-style fill, geometry calculations, bit-level encoding
 
-Mod de functionare: Corpurile sunt cautate la fiecare block din chunk. Deplasez, prima data, toate corpurile formate din block-uri mixte, ca solutie la situatia in care doua
-corpuri diferite, considerate uniforme din punct de vedere al tipurilor de block-uri, se considera a "atinge pamantul" din cauza faptului ca sunt in coliziune. Apoi, deplasez
-in jos si corpurile "uniforme", ajungand la rezultatul dorit.
+---
 
-TASK 9
+## 💡 Notes
 
-Am implementat o functie care encodeaza fiecare run, folosind operatii pe biti, in functie de tipul de block si de numarul de aparitii consecutive. Run-urile care trebuie encodate
-le obtin prin aflarea secventelor de block-uri identice din chunk.
-
-TASK 10
-
-Folosind mai multe functii care decodifica fiecare caracteristica a run-ului, construiesc noul chunk.
+- Emphasis was placed on modular design and readability.
+- Proper memory management is handled throughout.
+- Each task builds incrementally on the previous ones, culminating in compression and physics-like behaviors.
